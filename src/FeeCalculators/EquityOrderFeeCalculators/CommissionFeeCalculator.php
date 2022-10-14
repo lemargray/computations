@@ -6,8 +6,8 @@ use App\FeeCalculators\Interfaces\FeeCalculatorInterface;
 
 class CommissionFeeCalculator implements FeeCalculatorInterface
 {
-    public function execute($data, $effect, $rule) : float
+    public function execute($principal, $effect, $rule) : float
     {
-        return $data['units'] * $data['price'] * .15 * $effect;
+        return $principal * .15 * $effect;
     }
 }

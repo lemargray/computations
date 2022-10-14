@@ -1,8 +1,8 @@
 <?php
 
-namespace App\Rules;
+namespace App\FeeCalculators\Interfaces;
 
-interface ExecutableRuleInterface
+interface FeeCalculatorInterface
 {
     public function execute($principal, $effect, $rule) : float;
 }

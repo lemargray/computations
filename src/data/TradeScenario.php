@@ -1,5 +1,5 @@
 <?php 
 
 return [
-    'effect_on_holdings' => 1
+    'effectOnTotal' => -1
 ];

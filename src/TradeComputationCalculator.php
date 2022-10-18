@@ -2,57 +2,49 @@
 
 namespace App;
 
+use App\Entities\Deal;
+use App\Repositories\Interfaces\FeeRepositoryInterface;
+use FeeCalculatorTrait;
 use InvalidArgumentException;
 
-class TradeComputationCalculator implements TradeComputationCalculatorInterface
+class TradeComputationCalculator
 {
-    public function calculate($principal, $tradeScenario, $rules) : array
+    // use FeeCalculatorTrait;
+    protected $feeRepository;
+    protected $rules;
+
+    public function __construct(FeeRepositoryInterface $feeRepository, $rules)
     {
-        $charges = $this->calculateCharges($principal, $tradeScenario, $rules);
+        $this->feeRepository = $feeRepository;
+        $this->rules = $rules;
+    }
+
+    public function calculate(Deal $deal) : array
+    {
+        $charges = $this->calculateCharges($deal);
         
-        $amountDue = $principal + $charges['totalCharges'];
+        $amountDue = $deal->getPrincipal() + $charges['totalCharges'];
         
         return [
-            'princial' => $principal,
+            'princial' => $deal->getPrincipal(),
             'fees' => $charges['fees'],
             'totalCharges' => $charges['totalCharges'],
             'amountDue' => $amountDue
         ];
     }
 
-    protected function shouldApplyMininumAmount($rule, $fee)
-    {
-        return !empty($rule['minimum']) && abs($fee) < $rule['minimum'];
-    }
-
-    protected function isSlidingScale($flag)
-    {
-        return !empty($flag);
-    }
-
-    public function calculateCharges($principal, $tradeScenario, $feesConfigurations)
+    public function calculateCharges(Deal $deal)
     {
         $charges['totalCharges'] = 0;
+        $feeConfigs = $deal->getFeeConfigurations();
 
-        foreach($feesConfigurations as $feeConfig) {
-            $rate = 0;
-            $feeCalculator = new $feeConfig['class']();
+        foreach($feeConfigs as $feeConfig) {
+            /** @var \App\FeeCalculators\AbstractFeeCalculator */
+            $feeCalculator = new $feeConfig['class']($this->feeRepository, $this->rules);
         
-            $this->ifRuleIsNotAnExecutableRuleThrowEexception($feeCalculator, $feeConfig['class']);
-
-            if ($this->isSlidingScale($feeConfig['is_sliding_scale']))
-            {
-                //query db using principal value to get rate
-                //apply rate to principal
-                
-                $rate = .02;
-            }
+            // $this->ifRuleIsNotAnExecutableRuleThrowEexception($feeCalculator, $feeConfig['class']);
             
-            $fee = $feeCalculator->execute($principal, $tradeScenario['effect_on_holdings'], $feeConfig, $rate);
-            
-            if ($this->shouldApplyMininumAmount($feeConfig, $fee)) {
-                $fee = $feeConfig['minimum'];
-            }
+            $fee = $feeCalculator->calculate($deal, $feeConfig);
             
             $charges['fees'][$feeConfig['label']] = $fee;
             $charges['totalCharges'] += $fee;

@@ -1,7 +1,10 @@
 <?php
 
 return [
-    'units' => 100,
-    'price' => 5,
-    'principal' => 100 * 5
+    'units' => 100000,
+    'price' => 200,
+    'principal' => 100000 * 200,
+    'orderDate' => '2022-01-01',
+    'negotiatedRate' => 0.0175,
+    'isPercentage' => 1
 ];

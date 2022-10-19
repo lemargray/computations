@@ -23,13 +23,16 @@ class Deal
 
         $this->dealComputations = [
             'principal' => $principal,
-            'fees' => []
+            'fees' => [
+                'totalCharges' => 0
+            ],
         ];
     }
 
     public function setFee($key, $value)
     {
         $this->dealComputations['fees'][$key] = $value;
+        $this->dealComputations['fees']['totalCharges'] += $value;
     }
 
     public function getFee($key)

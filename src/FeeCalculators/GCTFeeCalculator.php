@@ -4,7 +4,7 @@ namespace App\FeeCalculators;
 
 use App\Entities\Deal;
 
-class FeeCalculator extends AbstractFeeCalculator
+class GCTFeeCalculator extends AbstractFeeCalculator
 {
     protected function execute(Deal $deal, $feeConfig) : float
     {
@@ -12,7 +12,8 @@ class FeeCalculator extends AbstractFeeCalculator
 
         foreach($this->rules as $rule)
         {
-            $ruleEvaluator = new $rule($this->feeRepository, $deal, $deal->getPrincipal(), $feeConfig);
+            $totalCharges = $deal->getFee('totalCharges');
+            $ruleEvaluator = new $rule($this->feeRepository, $deal, $totalCharges, $feeConfig);
 
             if( $ruleEvaluator->shouldApply() )
             {

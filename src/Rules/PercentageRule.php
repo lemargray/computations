@@ -28,8 +28,8 @@ class PercentageRule extends BaseRule
 
         echo PHP_EOL . $this->feeConfig['label'] . ' Fee Rate Amount: ' . $feeRateAmount . PHP_EOL;
 
-        return $this->deal->getPrincipal()
+        return $this->amount
             * $feeRateAmount 
-            * $this->deal->getTradeScenario()['effectOnTotal'];
+            * $this->tradeScenario['effectOnTotal'];
     }
 }

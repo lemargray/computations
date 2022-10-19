@@ -17,25 +17,23 @@ class SlidingScaleRule extends BaseRule
     public function apply() : float
     {
         $feeBands = $this->feeRepository->getSlidingScaleFees($this->feeConfig['feeTypeCode'], 
-                                            $this->deal->getPrincipal(), $this->deal->getTradeDate());
+                                            $this->amount, $this->deal->getTradeDate());
 
         $fee = 0;
 
-        // print_r($feeBands);exit;
-
         foreach($feeBands as $feeBand)
         {
-            $principal = $feeBand['upperLimit'] <= $this->deal->getPrincipal() ? $feeBand['upperLimit'] : $this->deal->getPrincipal();
+            $principal = $feeBand['upperLimit'] <= $this->amount ? $feeBand['upperLimit'] : $this->amount;
 
             if ($feeBand['isPercentage'] == 1)
             {
                 $fee += ($principal - $feeBand['lowerLimit'] + 1) 
                         * $feeBand['rateAmount'] 
-                        * $this->deal->getTradeScenario()['effectOnTotal'];
+                        * $this->tradeScenario['effectOnTotal'];
             } 
             else
             {
-                $fee += $feeBand['rateAmount'] * $this->deal->getTradeScenario()['effectOnTotal'];
+                $fee += $feeBand['rateAmount'] * $this->tradeScenario['effectOnTotal'];
             }
         }
         

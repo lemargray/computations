@@ -10,12 +10,15 @@ abstract class BaseRule implements RuleInterface
 {
     protected $feeRepository;
     protected $deal;
+    protected $tradeScenario;
     protected $feeConfig;
 
-    public function __construct(FeeRepositoryInterface $feeRepository, Deal $deal, $feeConfig)
+    public function __construct(FeeRepositoryInterface $feeRepository, Deal $deal, $amount, $feeConfig)
     {
         $this->feeRepository = $feeRepository;
+        $this->amount = $amount;
         $this->deal = $deal;
+        $this->tradeScenario = $deal->getTradeScenario();
         $this->feeConfig = $feeConfig;
     }
 

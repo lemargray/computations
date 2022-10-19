@@ -26,6 +26,6 @@ class FixedAmountRule extends BaseRule
                 $this->deal->getNegotiatedRate()->getAmount() :
                 $this->feeBand['rateAmount'];
 
-        return $feeRateAmount * $this->deal->getTradeScenario()['effectOnTotal'];
+        return $feeRateAmount * $this->tradeScenario['effectOnTotal'];
     }
 }

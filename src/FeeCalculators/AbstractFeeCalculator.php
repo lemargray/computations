@@ -24,20 +24,6 @@ abstract class AbstractFeeCalculator
 
     public function calculate(Deal $deal, $feeConfig)
     {
-        $fee = 0;
-
-        foreach($this->rules as $rule)
-        {
-            $ruleEvaluator = new $rule($this->feeRepository, $deal, $feeConfig);
-
-            if( $ruleEvaluator->shouldApply() )
-            {
-                $fee = $ruleEvaluator->apply();
-                $feeName = $feeConfig['label'];
-                $deal->setFee($feeName, $fee);
-            }
-        }
-
-        return $fee;
+        return $this->execute($deal, $feeConfig);
     }
 }

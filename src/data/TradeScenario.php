@@ -1,5 +1,5 @@
 <?php 
 
 return [
-    'effectOnTotal' => -1
+    'effectOnTotal' => 1
 ];
